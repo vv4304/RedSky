@@ -21,6 +21,9 @@ import java.util.TimerTask;
 public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnable {
     Bitmap cache2;
     int player_beaten_number = 0;
+
+
+
     boolean state = false;
     SurfaceHolder surfaceHolder;
     Bitmap background;
