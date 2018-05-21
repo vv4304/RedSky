@@ -6,11 +6,28 @@ public interface Goods {
 
     public Bitmap getBitmap();
 
-    public int getX();
+    public float getX();
 
-    public int getY();
+    public float getY();
+
+    public void setX(float x);
+
+    public void setY(float y);
 
     public void update();
+
+
+    public int getwidth();
+
+    public int getheight();
+
+    public boolean getIsRun();
+
+    public void setIsRun(boolean is);
+
+    public void setAnimationNum(int num);
+
+    public int getAnimationNum();
 
 
 }
