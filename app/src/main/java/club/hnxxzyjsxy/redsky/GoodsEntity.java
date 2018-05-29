@@ -9,12 +9,12 @@ import java.util.Random;
 public class GoodsEntity {
 
 
-    static class manImage implements Goods {
+    static class own implements Goods {
         int z = 0;
         int width, height;
 
 
-        public manImage(int x, int y) {
+        public own(int x, int y) {
             width = Draw.down[0].getWidth();
             height = Draw.down[0].getHeight();
 
@@ -180,7 +180,7 @@ public class GoodsEntity {
 
     }
 
-    static class bombImage implements Goods     {
+    static class bombImage implements Goods {
 
         boolean is = true;
         int Sleep = 0;
@@ -278,7 +278,10 @@ public class GoodsEntity {
             return num;
         }
 
-
+        @Override
+        public String toString() {
+            return "bomb";
+        }
     }
 
     static class Baseball implements Goods {
@@ -347,12 +350,12 @@ public class GoodsEntity {
 
         @Override
         public int getwidth() {
-            return 0;
+            return width;
         }
 
         @Override
         public int getheight() {
-            return 0;
+            return height;
         }
 
         @Override
@@ -375,7 +378,10 @@ public class GoodsEntity {
             return this.num;
         }
 
-
+        @Override
+        public String toString() {
+            return "baseball";
+        }
     }
 
     static class Grenade implements Goods {
@@ -477,7 +483,110 @@ public class GoodsEntity {
             return this.num;
         }
 
+        @Override
+        public String toString() {
+            return "grenade";
+        }
+    }
 
+
+    static class GreenHat implements Goods {
+        boolean is = true;
+        Matrix matrix;
+        float x = 0, y = 0, rotate = 0;
+        Bitmap bitmap;
+        float Sleep = 0;
+        float addSleep = 0;
+        int MaxSleep = 10;
+        int width;
+        int height;
+        int num = 0;
+
+        public GreenHat(int width, int height) {
+            this.width = width;
+            this.height = height;
+            matrix = new Matrix();
+            bitmap = Draw.greenhat;
+            Random random = new Random();
+            this.x = random.nextInt(environmentObject.display_w - Draw.greenhat.getWidth());
+            this.y = -Draw.greenhat.getHeight();
+
+        }
+
+        @Override
+        public Bitmap getBitmap() {
+          /*  matrix.setRotate(rotate, Draw.grenade.getWidth() / 2, Draw.grenade.getHeight() / 2);
+            bitmap = Bitmap.createBitmap(Draw.grenade, 0, 0, Draw.grenade.getWidth(), Draw.grenade.getHeight(), matrix, true);
+         */
+            return bitmap;
+
+        }
+
+        @Override
+        public float getX() {
+            return x;
+        }
+
+        @Override
+        public float getY() {
+            return y;
+        }
+
+        @Override
+        public void setX(float x) {
+            this.x = x;
+        }
+
+        @Override
+        public void setY(float y) {
+            this.y = y;
+        }
+
+        @Override
+        public void update() {
+            if (is) {
+                y += environmentObject.bomb_sleep;
+            } else {
+
+                x = environmentObject.player_x;
+            }
+
+        }
+
+        @Override
+        public int getwidth() {
+            return width;
+        }
+
+        @Override
+        public int getheight() {
+            return height;
+        }
+
+        @Override
+        public boolean getIsRun() {
+            return is;
+        }
+
+        @Override
+        public void setIsRun(boolean is) {
+            this.is = is;
+        }
+
+        @Override
+        public void setAnimationNum(int num) {
+            this.num = num;
+        }
+
+        @Override
+        public int getAnimationNum() {
+            return this.num;
+        }
+
+        @Override
+        public String toString() {
+            return "greenhat";
+        }
     }
 
 

@@ -15,6 +15,9 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.Socket;
+
 
 public class Start extends Activity {
 
@@ -27,6 +30,17 @@ public class Start extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
+
+
+
+
+
+
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         environmentObject.page = -1;
         assetManager = getAssets();
@@ -38,6 +52,9 @@ public class Start extends Activity {
         powerfilter.addAction(Intent.ACTION_POWER_CONNECTED);
         power = new power();
         registerReceiver(power, powerfilter);
+
+
+
     }
 
     @Override

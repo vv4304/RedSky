@@ -1,6 +1,8 @@
 package club.hnxxzyjsxy.redsky;
 
 
+import java.net.Socket;
+
 public class environmentObject {
 
     static int bomb_sleep;
@@ -13,9 +15,10 @@ public class environmentObject {
     static Boolean isRun = true;
     static Boolean iSinit = false;
     static int playerNumber = 1;
-    static int[][] playerLocation = new int[10][2];
+    static int[][] playerLocation = new int[10][3];
     static int load = 0;
     static int player_x, player_y, player_blood = 100, player_speed;
     static int playerx;
+   static Socket socket = null;
 
 }

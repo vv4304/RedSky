@@ -6,20 +6,21 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 
 public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnable {
     boolean init = false;
@@ -29,59 +30,86 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
     SurfaceHolder surfaceHolder;
     Bitmap background;
     ArrayList<Goods> gameImagesList = new ArrayList<>();
-
     // static List<Goods> bombImages = new LinkedList<>();
     //static List<Goods> grenades = new LinkedList<>();
-
     static List<Goods> fell = new LinkedList<>();
-
-    static GoodsEntity.manImage manimages;
+    static List<Goods> head = new LinkedList<>();
     static ArrayList<GoodsEntity.player> player = new ArrayList<>();
+
+
+    long beforetime, sumulationtime = 0, fixedtimer = 20, starttime, endtime = 0;
+    static GoodsEntity.own oneself;
     static Bitmap[] left = new Bitmap[4];
     static Bitmap[] reight = new Bitmap[4];
     static Bitmap[] down = new Bitmap[1];
     static ArrayList<Integer> move = new ArrayList<>();
     Bitmap[] button = new Bitmap[2];
     static Bitmap bomb[] = new Bitmap[2];
-    static Bitmap baseball, grenade;
+    static Bitmap baseball, grenade, NULL, greenhat;
     static Bitmap[] bombExplosion = new Bitmap[5];
     boolean isOk = true;
-
+    Bitmap Blood;
+    Canvas bloodCanvas;
     Timer GoodsUpdate, animation;
     static Thread mainThread;
     final Object object = new Object();
+    Paint Bloodpaint1 = new Paint();
+    Paint Bloodpaint2 = new Paint();
+    Paint paint = new Paint();
+    Thread request, send;
 
 
     public Draw(Context context) {
         super(context);
-        background = Tool.getImageBitmap("bg.png");
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         if (environmentObject.isBack) {
-
-            try {
-                mainThread.sleep(200000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
         } else {
             switch (environmentObject.page) {
                 case 0:
                     switch (event.getAction() & event.ACTION_MASK) {
                         case MotionEvent.ACTION_DOWN:
-                            environmentObject.page = 11;
-                            GoodsUpdate.schedule(new GoodRunTask(), 0, 10);
-                            animation.schedule(new Animation(), 0, 100);
+
+                            if (event.getY() <= environmentObject.display_h / 2) {
+
+                                environmentObject.page = 11;
+                                GoodsUpdate.schedule(new GoodRunTask(), 0, 10);
+                                animation.schedule(new Animation(), 0, 100);
+
+                            } else {
+
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+
+                                        try {
+                                            environmentObject.socket = new Socket("144.202.7.185", 7777);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+
+
+                                        send.start();
+                                        request.start();
+                                        environmentObject.page = 22;
+
+                                    }
+                                }).start();
+
+                            }
+
                             break;
                     }
                     break;
                 case 11:
+
+
                     int i = event.getPointerCount();
                     int moves = 0;
                     switch (event.getAction() & event.ACTION_MASK) {
@@ -120,7 +148,7 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
         initImage();
         gameImagesList.add(new backgronudImage(background));
         //player.add(new GoodsEntity.manImage(environmentObject.display_w / 2, (int) (environmentObject.display_h * environmentObject.lawn) - down[0].getHeight()));
-        manimages = new GoodsEntity.manImage(environmentObject.display_w / 2, (int) (environmentObject.display_h * environmentObject.lawn) - down[0].getHeight());
+        oneself = new GoodsEntity.own(environmentObject.display_w / 2, (int) (environmentObject.display_h * environmentObject.lawn) - down[0].getHeight());
         player.add(new GoodsEntity.player(environmentObject.display_w / 2, (int) (environmentObject.display_h * environmentObject.lawn) - down[0].getHeight()));
 
         GoodsUpdate = new Timer();
@@ -129,9 +157,12 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
         Log.e("SSS", maxMemory + "");
 
 
-        Thread thread = new Thread(new SocketConnectSend());
+        Thread thread = new Thread(new SocketConnectRead());
         // thread.start();
         environmentObject.iSinit = true;
+
+        request = new Thread(new SocketConnectSend());
+        send = new Thread(new SocketConnectRead());
 
 
     }
@@ -141,6 +172,7 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5);
         cache2 = Bitmap.createBitmap(environmentObject.display_w, environmentObject.display_h, Bitmap.Config.RGB_565);
+        background = Tool.getImageBitmap("bg.png");
         Bitmap bitmap = Tool.getImageBitmap("player.png");
         Bitmap bombexplosion = Tool.getImageBitmap("bomb.png");
         int[] z = {0, 100, 200, 300};
@@ -177,12 +209,16 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
         bomb[1] = Bitmap.createBitmap(items, 896, 14, 50, 94);
         baseball = Bitmap.createBitmap(items, 1214, 40, 36, 34);
         grenade = Bitmap.createBitmap(items, 687, 32, 59, 59);
+        NULL = Bitmap.createBitmap(items, 17, 24, 48, 48);
+        greenhat = Bitmap.createBitmap(items, 1793, 45, 97, 55);
 
 
         bomb[1] = Tool.getNewSizeBitmap(bomb[1], (float) (environmentObject.display_w * 0.05 / bomb[1].getWidth()), (float) (environmentObject.display_w * 0.05 / bomb[1].getWidth()));
         bomb[0] = Tool.getNewSizeBitmap(bomb[0], (float) (environmentObject.display_w * 0.03 / bomb[0].getWidth()), (float) (environmentObject.display_w * 0.03 / bomb[0].getWidth()));
         baseball = Tool.getNewSizeBitmap(baseball, (float) (environmentObject.display_w * 0.05 / baseball.getWidth()), (float) (environmentObject.display_w * 0.05 / baseball.getWidth()));
         grenade = Tool.getNewSizeBitmap(grenade, (float) (environmentObject.display_w * 0.09 / grenade.getWidth()), (float) (environmentObject.display_w * 0.09 / grenade.getWidth()));
+        NULL = Tool.getNewSizeBitmap(NULL, (float) (environmentObject.display_w * 0.15 / NULL.getWidth()), (float) (environmentObject.display_w * 0.15 / NULL.getWidth()));
+        greenhat = Tool.getNewSizeBitmap(greenhat, (float) (environmentObject.display_w * 0.15 / greenhat.getWidth()), (float) (environmentObject.display_w * 0.15 / greenhat.getWidth()));
 
 
         Canvas canvas21 = new Canvas(bomb[0]);
@@ -192,9 +228,13 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
 
         Canvas canvas223 = new Canvas(baseball);
         canvas223.drawRect(0, 0, baseball.getWidth(), baseball.getHeight(), paint);
-
-
         items.recycle();
+        Blood = Bitmap.createBitmap(100, 30, Bitmap.Config.RGB_565);
+
+        Bloodpaint1.setColor(Color.BLUE);
+        Bloodpaint2.setColor(Color.WHITE);
+        bloodCanvas = new Canvas(Blood);
+
 
     }
 
@@ -211,6 +251,7 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
         this.surfaceHolder = surfaceHolder;
 
         mainThread = new Thread(this);
+        mainThread.setPriority(10);
         mainThread.start();
 
 
@@ -223,22 +264,18 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
         environmentObject.isRun = false;
     }
 
+
     @Override
     public void run() {
 
         Canvas Mcanvas;
-        long starttime, endtime, sumulationtime = 0, fixedtimer = 20;
+
 
         if (!environmentObject.iSinit) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     init();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     environmentObject.iSinit = true;
                     environmentObject.page = 0;
 
@@ -247,9 +284,16 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
         }
         long InitTime = System.currentTimeMillis();
         while (true) {
-            starttime = System.currentTimeMillis() - InitTime;
+            starttime = System.currentTimeMillis();
+            beforetime = System.currentTimeMillis() - InitTime;
             if (environmentObject.isRun) {
-                Mcanvas = surfaceHolder.lockCanvas();
+
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Mcanvas = surfaceHolder.lockHardwareCanvas();
+                } else {
+                    Mcanvas = surfaceHolder.lockCanvas();
+                }
                 if (!environmentObject.isRun) {
                     break;
                 }
@@ -263,28 +307,8 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
                         break;
                     case 11:
                         if (environmentObject.player_blood >= -50000000) {
-                            synchronized (object) {
-                                for (int i = 0; i < fell.size() - 1; i++) {
-                                    if (fell.get(i).getX() + fell.get(i).getwidth() >= environmentObject.player_x && fell.get(i).getX() <= environmentObject.player_x + manimages.getwidth() && fell.get(i).getY() + fell.get(i).getheight() >= Draw.manimages.getY()) {
-                                        fell.get(i).setIsRun(false);
-                                        fell.get(i).setX(fell.get(i).getX() - bombExplosion[0].getWidth() / 2);
-                                        fell.get(i).setY(fell.get(i).getY() - bombExplosion[1].getHeight() / 2);
-                                        environmentObject.player_blood -= 10;
-                                    }
+                            GameOne(Mcanvas);
 
-                                }
-                                while (sumulationtime < starttime) {
-                                    sumulationtime += fixedtimer;
-
-                                    for (int i = 0; i < fell.size() - 1; i++) {
-                                        fell.get(i).update();
-                                    }
-                                    manimages.update();
-                                }
-
-
-                                GameOne(Mcanvas);
-                            }
                         }
                         break;
                     case 22:
@@ -293,10 +317,18 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
 
                 }
                 DrawSystemMessage(Mcanvas);
+                Paint paint = new Paint();
+                paint.setTextSize(100);
+                Mcanvas.drawText(endtime + "", 500, 500, paint);
+                Mcanvas.drawText(String.valueOf(head.size()), 700, 700, paint);
+
+
                 if (environmentObject.isRun) {
                     surfaceHolder.unlockCanvasAndPost(Mcanvas);
                 }
 
+                endtime = System.currentTimeMillis() - starttime;
+                //Log.e("TIME", endtime + "");
 
             }
         }
@@ -314,68 +346,193 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
     }
 
     private void GameOne(Canvas canvas) {
-        Bitmap Blood;
-        Paint paint = new Paint();
-        Paint blood_bg = new Paint(), blood = new Paint();
-        blood_bg.setColor(Color.BLUE);
-        blood.setColor(Color.WHITE);
-        Blood = Bitmap.createBitmap(100, 30, Bitmap.Config.RGB_565);
 
-        Canvas bloodCanvas = new Canvas(Blood);
+        while (sumulationtime < beforetime) {
+            sumulationtime += fixedtimer;
 
-        for (Goods image : gameImagesList) {
-            canvas.drawBitmap(image.getBitmap(), image.getX(), image.getY(), paint);
+            for (int i = 0; i < fell.size(); i++) {
+                fell.get(i).update();
+            }
+            for (int i = 0; i < head.size(); i++) {
+                head.get(i).update();
+            }
+            oneself.update();
         }
-        bloodCanvas.drawRect(0, 0, Blood.getWidth(), Blood.getHeight(), blood_bg);
-        bloodCanvas.drawRect(0, 0, environmentObject.player_blood, Blood.getHeight(), blood);
+
+        for (int i = 0; i < fell.size(); i++) {
+            float x = fell.get(i).getX();
+            float y = fell.get(i).getY();
+            int width = fell.get(i).getwidth();
+            int height = fell.get(i).getheight();
+            float GoodsCenter = fell.get(i).getX() + (fell.get(i).getwidth() / 2);
+            float PlayerCenter = oneself.getX() + (oneself.getwidth() / 2);
+
+
+            if (head.size() > 0) {
+                if (x + width >= environmentObject.player_x && x <= environmentObject.player_x + oneself.getwidth() && y + height >= head.get(head.size() - 1).getY() && y + height <= oneself.getY()) {
+
+
+                    switch (fell.get(i).toString()) {
+                        case "baseball":
+
+                            if (GoodsCenter <= PlayerCenter) {
+                                fell.get(i).setX(head.get(0).getX() - width - 1);
+                            } else {
+                                fell.get(i).setX(head.get(0).getX() + head.get(0).getwidth() + 1);
+                            }
+
+                            head.remove(head.get(head.size() - 1));
+                            break;
+                        case "grenade":
+
+                            if (GoodsCenter <= PlayerCenter) {
+                                fell.get(i).setX(head.get(0).getX() - width - 1);
+                            } else {
+                                fell.get(i).setX(head.get(0).getX() + head.get(0).getwidth() + 1);
+                            }
+                            head.remove(head.get(head.size() - 1));
+                            break;
+                        case "bomb":
+                            if (GoodsCenter <= PlayerCenter) {
+                                fell.get(i).setX(head.get(0).getX() - width - 1);
+                            } else {
+                                fell.get(i).setX(head.get(0).getX() + head.get(0).getwidth() + 1);
+                            }
+                            head.remove(head.get(head.size() - 1));
+
+                            break;
+                        case "greenhat":
+                            fell.get(i).setIsRun(false);
+                            fell.get(i).setY((float) (head.get(head.size() - 1).getY() - head.get(head.size() - 1).getheight() + environmentObject.display_h * 0.02));
+
+                            head.add(fell.get(i));
+                            fell.remove(fell.get(i));
+                            break;
+                    }
+                }
+            }
+
+
+            if (x + width >= environmentObject.player_x && x <= environmentObject.player_x + oneself.getwidth() && y + height >= Draw.oneself.getY() && y <= oneself.getY() + oneself.getheight()) {
+                fell.get(i).setIsRun(false);
+                switch (fell.get(i).toString()) {
+                    case "baseball":
+                        environmentObject.player_blood -= 10;
+                        fell.get(i).setX(fell.get(i).getX() - bombExplosion[0].getWidth() / 2);
+                        fell.get(i).setY(fell.get(i).getY() - bombExplosion[1].getHeight() / 2);
+                        break;
+                    case "grenade":
+                        environmentObject.player_blood -= 20;
+                        fell.get(i).setX(fell.get(i).getX() - bombExplosion[0].getWidth() / 2);
+                        fell.get(i).setY(fell.get(i).getY() - bombExplosion[1].getHeight() / 2);
+
+                        break;
+                    case "bomb":
+
+                        environmentObject.player_blood -= 50;
+                        fell.get(i).setX(fell.get(i).getX() - bombExplosion[0].getWidth() / 2);
+                        fell.get(i).setY(fell.get(i).getY() - bombExplosion[1].getHeight() / 2);
+                        break;
+                    case "greenhat":
+                        if (head.size() < 1) {
+                            fell.get(i).setY((float) (environmentObject.player_y - grenade.getHeight() + environmentObject.display_h * 0.01));
+                        } else {
+                            fell.get(i).setY((float) (head.get(head.size() - 1).getY() - head.get(head.size() - 1).getheight() + environmentObject.display_h * 0.02));
+
+                        }
+                        head.add(fell.get(i));
+                        fell.remove(fell.get(i));
+                        break;
+                }
+
+            }
+
+        }
+
+
+        for (int i = 0; i < gameImagesList.size(); i++) {
+            canvas.drawBitmap(gameImagesList.get(i).getBitmap(), gameImagesList.get(i).getX(), gameImagesList.get(i).getY(), paint);
+        }
+
+        bloodCanvas.drawRect(0, 0, Blood.getWidth(), Blood.getHeight(), Bloodpaint1);
+        bloodCanvas.drawRect(0, 0, environmentObject.player_blood, Blood.getHeight(), Bloodpaint2);
+
         Paint paint1 = new Paint();
         paint1.setTextSize(30);
         paint1.setColor(Color.RED);
         bloodCanvas.drawText(environmentObject.player_blood + "", 0, 28, paint1);
 
-
         canvas.drawBitmap(Blood, (float) (environmentObject.display_w * 0.01), (float) (environmentObject.display_h * 0.01), paint);
+        canvas.drawBitmap(oneself.getBitmap(), oneself.getX(), oneself.getY(), paint);
 
-        canvas.drawBitmap(manimages.getBitmap(), manimages.getX(), manimages.getY(), paint);
+        //Log.e("S", String.valueOf(head.size()));
 
-        for (int i = 0; i < fell.size() - 1; i++) {
-            canvas.drawBitmap(fell.get(i).getBitmap(), fell.get(i).getX(), fell.get(i).getY(), paint);
-        }
-
-    }
-
-    private void GameTwo(Canvas canvas) {
-        Bitmap Blood;
-        Paint paint = new Paint();
-        Paint blood_bg = new Paint(), blood = new Paint();
-        blood_bg.setColor(Color.BLUE);
-        blood.setColor(Color.WHITE);
-        Blood = Bitmap.createBitmap(100, 30, Bitmap.Config.RGB_565);
-
-        Canvas bloodCanvas = new Canvas(Blood);
-
-
-        for (Goods image : gameImagesList) {
-            canvas.drawBitmap(image.getBitmap(), image.getX(), image.getY(), paint);
-        }
-        bloodCanvas.drawRect(0, 0, Blood.getWidth(), Blood.getHeight(), blood_bg);
-        bloodCanvas.drawRect(0, 0, environmentObject.player_blood, Blood.getHeight(), blood);
-        canvas.drawBitmap(Blood, (float) (environmentObject.display_w * 0.01), (float) (environmentObject.display_h * 0.01), paint);
-
-        canvas.drawBitmap(manimages.getBitmap(), manimages.getX(), manimages.getY(), paint);
-
-        canvas.drawBitmap(player.get(0).getBitmap(), player.get(0).getX(), player.get(0).getY(), paint);
-
-        if (player.size() > 0) {
-
-            canvas.drawBitmap(manimages.getBitmap(), manimages.getX(), manimages.getY(), paint);
-
+        for (int i = 0; i < head.size(); i++) {
+            // Log.e("S", "DRAW");
+            canvas.drawBitmap(head.get(i).getBitmap(), head.get(i).getX(), head.get(i).getY(), paint);
         }
 
         for (int i = 0; i < fell.size(); i++) {
             canvas.drawBitmap(fell.get(i).getBitmap(), fell.get(i).getX(), fell.get(i).getY(), paint);
         }
 
+        canvas.drawBitmap(NULL, environmentObject.display_w - NULL.getWidth(), environmentObject.display_h / 2, paint);
+
+
+    }
+
+    private void GameTwo(Canvas canvas) {
+
+
+        for (int i = 0; i < fell.size() - 1; i++) {
+            if (fell.get(i).getX() + fell.get(i).getwidth() >= environmentObject.player_x && fell.get(i).getX() <= environmentObject.player_x + oneself.getwidth() && fell.get(i).getY() + fell.get(i).getheight() >= Draw.oneself.getY()) {
+                fell.get(i).setIsRun(false);
+                fell.get(i).setX(fell.get(i).getX() - bombExplosion[0].getWidth() / 2);
+                fell.get(i).setY(fell.get(i).getY() - bombExplosion[1].getHeight() / 2);
+
+                switch (fell.get(i).toString()) {
+                    case "baseball":
+                        environmentObject.player_blood -= 1;
+
+                        break;
+                    case "grenade":
+                        environmentObject.player_blood -= 10;
+
+                        break;
+                    case "bomb":
+                        environmentObject.player_blood -= 50;
+
+                        break;
+                }
+            }
+        }
+
+
+        for (int i = 0; i < gameImagesList.size(); i++) {
+            canvas.drawBitmap(gameImagesList.get(i).getBitmap(), gameImagesList.get(i).getX(), gameImagesList.get(i).getY(), paint);
+        }
+
+        bloodCanvas.drawRect(0, 0, Blood.getWidth(), Blood.getHeight(), Bloodpaint1);
+        bloodCanvas.drawRect(0, 0, environmentObject.player_blood, Blood.getHeight(), Bloodpaint2);
+
+        Paint paint1 = new Paint();
+        paint1.setTextSize(30);
+        paint1.setColor(Color.RED);
+        bloodCanvas.drawText(environmentObject.player_blood + "", 0, 28, paint1);
+
+        canvas.drawBitmap(Blood, (float) (environmentObject.display_w * 0.01), (float) (environmentObject.display_h * 0.01), paint);
+
+
+        for (int i = 0; i < player.size(); i++) {
+            canvas.drawBitmap(player.get(i).getBitmap(), player.get(i).getX(), player.get(i).getY(), paint);
+        }
+
+
+        canvas.drawBitmap(oneself.getBitmap(), oneself.getX(), oneself.getY(), paint);
+/*
+        for (int i = 0; i < fell.size(); i++) {
+            canvas.drawBitmap(fell.get(i).getBitmap(), fell.get(i).getX(), fell.get(i).getY(), paint);
+        }*/
 
     }
 
@@ -554,7 +711,7 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
         public void run() {
 
             if (environmentObject.isRun) {
-                for (int i = 0; i < fell.size() - 1; i++) {
+                for (int i = 0; i < fell.size(); i++) {
                     if (fell.get(i).getY() > environmentObject.display_h) {
                         fell.remove(i);
                     }
@@ -564,7 +721,7 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
                 if (num == 50) {
                     Random random = new Random();
                     synchronized (object) {
-                        switch (random.nextInt(3)) {
+                        switch (random.nextInt(4)) {
                             case 0:
                                 fell.add(new GoodsEntity.bombImage(bomb[0].getWidth(), bomb[0].getHeight()));
                                 break;
@@ -574,9 +731,10 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback, Runnabl
                                 break;
                             case 2:
                                 fell.add(new GoodsEntity.Baseball(baseball.getWidth(), baseball.getHeight()));
-
                                 break;
-
+                            case 3:
+                                fell.add(new GoodsEntity.GreenHat(greenhat.getWidth(), greenhat.getHeight()));
+                                break;
                         }
                     }
                     num = 0;
