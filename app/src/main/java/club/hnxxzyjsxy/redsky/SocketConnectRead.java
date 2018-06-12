@@ -20,7 +20,7 @@ public class SocketConnectRead implements Runnable {
 
 
         while (true) {
-
+/*
             try {
                 inputStream = environmentObject.socket.getInputStream();
             } catch (IOException e) {
@@ -43,8 +43,7 @@ public class SocketConnectRead implements Runnable {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-            Log.e("read", "S");
+            }*/
 
 /*
             try {
@@ -84,8 +83,11 @@ public class SocketConnectRead implements Runnable {
 
          */
 
+
+
+
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

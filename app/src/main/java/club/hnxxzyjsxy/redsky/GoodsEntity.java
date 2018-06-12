@@ -2,6 +2,7 @@ package club.hnxxzyjsxy.redsky;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.util.Log;
 
 import java.util.Date;
 import java.util.Random;
@@ -105,6 +106,7 @@ public class GoodsEntity {
     static class player implements Goods {
         int z = 0;
         int x, y, newx;
+        boolean is = false;
 
 
         public player(int x, int y) {
@@ -149,12 +151,12 @@ public class GoodsEntity {
 
         @Override
         public boolean getIsRun() {
-            return false;
+            return this.is;
         }
 
         @Override
         public void setIsRun(boolean is) {
-
+            this.is = is;
         }
 
         @Override
@@ -195,6 +197,7 @@ public class GoodsEntity {
         long time;
         int width;
         int height;
+        long inittime;
 
         public bombImage(int width, int height) {
             this.width = width;
@@ -203,6 +206,7 @@ public class GoodsEntity {
             this.x = random.nextInt(environmentObject.display_w - Draw.bomb[0].getWidth());
             this.y = -Draw.bomb[0].getHeight();
             // type = random.nextInt(2);
+            inittime = System.currentTimeMillis();
         }
 
         @Override
@@ -239,7 +243,7 @@ public class GoodsEntity {
         @Override
         public void update() {
             if (is) {
-                y += environmentObject.bomb_sleep;
+                y = (System.currentTimeMillis() - inittime) / 10 * 10;
             } else {
                 if (num == 4) {
                     Draw.fell.remove(this);
@@ -337,7 +341,7 @@ public class GoodsEntity {
         @Override
         public void update() {
             if (is) {
-                y += 10;
+                y = Draw.RunTime;
                 if (getY() > environmentObject.display_h * environmentObject.lawn) {
                     is = false;
                 }
@@ -443,7 +447,7 @@ public class GoodsEntity {
         @Override
         public void update() {
             if (is) {
-                y += environmentObject.bomb_sleep;
+                y = Draw.RunTime * environmentObject.bomb_sleep;
             } else {
                 if (num == 4) {
                     Draw.fell.remove(this);
@@ -501,6 +505,7 @@ public class GoodsEntity {
         int width;
         int height;
         int num = 0;
+        long inittime;
 
         public GreenHat(int width, int height) {
             this.width = width;
@@ -510,6 +515,7 @@ public class GoodsEntity {
             Random random = new Random();
             this.x = random.nextInt(environmentObject.display_w - Draw.greenhat.getWidth());
             this.y = -Draw.greenhat.getHeight();
+            inittime = System.currentTimeMillis();
 
         }
 
@@ -545,9 +551,8 @@ public class GoodsEntity {
         @Override
         public void update() {
             if (is) {
-                y += environmentObject.bomb_sleep;
+                y = (System.currentTimeMillis() - inittime) / 10 * 5;
             } else {
-
                 x = environmentObject.player_x;
             }
 
@@ -586,6 +591,100 @@ public class GoodsEntity {
         @Override
         public String toString() {
             return "greenhat";
+        }
+    }
+
+    static class LuckyBox implements Goods {
+
+        boolean is = true;
+        Matrix matrix;
+        float x = 0, y = 0, rotate = 0;
+        Bitmap bitmap;
+        float Sleep = 0;
+        float addSleep = 0;
+        int MaxSleep = 10;
+        int width;
+        int height;
+        int num = 0;
+        long inittime;
+
+
+        public LuckyBox(int width, int height) {
+            this.width = width;
+            this.height = height;
+            bitmap = Draw.luckybox;
+            Random random = new Random();
+            this.x = random.nextInt(environmentObject.display_w - Draw.luckybox.getWidth());
+            this.y = -Draw.luckybox.getHeight();
+            inittime = System.currentTimeMillis();
+        }
+
+
+        @Override
+        public Bitmap getBitmap() {
+            return bitmap;
+        }
+
+        @Override
+        public float getX() {
+            return x;
+        }
+
+        @Override
+        public float getY() {
+            return y;
+        }
+
+        @Override
+        public void setX(float x) {
+            this.x = x;
+        }
+
+        @Override
+        public void setY(float y) {
+            this.y = y;
+        }
+
+        @Override
+        public void update() {
+            if (is) {
+                y = (System.currentTimeMillis() - inittime) / 10 * 5;
+            }
+        }
+
+        @Override
+        public int getwidth() {
+            return width;
+        }
+
+        @Override
+        public int getheight() {
+            return height;
+        }
+
+        @Override
+        public boolean getIsRun() {
+            return is;
+        }
+
+        @Override
+        public void setIsRun(boolean is) {
+            this.is = is;
+        }
+
+        @Override
+        public void setAnimationNum(int num) {
+            this.num = num;
+        }
+
+        @Override
+        public int getAnimationNum() {
+            return this.num;
+        }
+
+        @Override
+        public String toString() {
+            return "luckybox";
         }
     }
 

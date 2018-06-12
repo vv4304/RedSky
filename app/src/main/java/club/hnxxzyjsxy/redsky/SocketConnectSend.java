@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.Socket;
 
 public class SocketConnectSend implements Runnable {
 
@@ -18,6 +19,7 @@ public class SocketConnectSend implements Runnable {
 
 
         while (true) {
+/*
 
             JSONObject jsonObject = new JSONObject();
             try {
@@ -26,6 +28,7 @@ public class SocketConnectSend implements Runnable {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+*/
 
 
             try {
@@ -35,22 +38,18 @@ public class SocketConnectSend implements Runnable {
             }
 
 
-            try {
-                outputStream.write(jsonObject.toString().getBytes("utf-8"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Log.e("CONNECT", "send");
+            if (Draw.message.size() >= 1) {
+                try {
+                    outputStream.write(Draw.message.get(0).getBytes("utf-8"));
+                    Log.e("SEND", Draw.message.get(0));
+                    Draw.message.remove(0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
 
 
         }
-
-
     }
 }
