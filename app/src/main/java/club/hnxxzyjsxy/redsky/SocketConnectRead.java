@@ -59,7 +59,7 @@ public class SocketConnectRead implements Runnable {
 
 
 /*
-            Goods player0 = Draw.oneself;
+            Goods player0 = object.oneself;
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("x", String.valueOf((float) player0.getX() / (float) environmentObject.display_w));

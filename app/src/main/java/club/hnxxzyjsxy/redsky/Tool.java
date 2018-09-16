@@ -25,5 +25,16 @@ public class Tool {
         return null;
     }
 
+    public static Bitmap cropBitmap(Bitmap bitmap) {//从中间截取一个正方形
+        int w = bitmap.getWidth(); // 得到图片的宽，高
+        int h = bitmap.getHeight();
+        return Bitmap.createBitmap(bitmap,0,0,environmentObject.display_w,environmentObject.display_h);
+    }
+
+
+
+
+
+
 
 }

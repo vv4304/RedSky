@@ -23,8 +23,8 @@ public class SocketConnectSend implements Runnable {
 
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("x", Draw.oneself.getX());
-                jsonObject.put("y", Draw.oneself.getY());
+                jsonObject.put("x", object.oneself.getX());
+                jsonObject.put("y", object.oneself.getY());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -38,11 +38,11 @@ public class SocketConnectSend implements Runnable {
             }
 
 
-            if (Draw.message.size() >= 1) {
+            if (object.message.size() >= 1) {
                 try {
-                    outputStream.write(Draw.message.get(0).getBytes("utf-8"));
-                    Log.e("SEND", Draw.message.get(0));
-                    Draw.message.remove(0);
+                    outputStream.write(object.message.get(0).getBytes("utf-8"));
+                    Log.e("SEND", object.message.get(0));
+                    object.message.remove(0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -1,6 +1,7 @@
 package club.hnxxzyjsxy.redsky;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -30,17 +32,6 @@ public class Start extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-
-
-
-
-
-
-
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         environmentObject.page = -1;
         assetManager = getAssets();
@@ -52,9 +43,7 @@ public class Start extends Activity {
         powerfilter.addAction(Intent.ACTION_POWER_CONNECTED);
         power = new power();
         registerReceiver(power, powerfilter);
-
-
-
+        environmentObject.v = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
@@ -87,7 +76,6 @@ public class Start extends Activity {
     }
 
     class power extends BroadcastReceiver {
-
 
         @Override
         public void onReceive(Context context, Intent intent) {

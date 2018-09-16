@@ -14,7 +14,12 @@ public interface Goods {
 
     public void setY(float y);
 
+
     public void update();
+
+    public int getsleep();
+
+    public void setsleep(int sleep);
 
 
     public int getwidth();
