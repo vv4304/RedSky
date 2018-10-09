@@ -4,12 +4,15 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 
 public class object {
@@ -27,12 +30,12 @@ public class object {
 
     // static List<Goods> bombImages = new LinkedList<>();
     //static List<Goods> grenades = new LinkedList<>();s
-
+    //static TreeMap fell = new TreeMap();
     static List<Layer> Layer = new ArrayList<>();
     static List<Integer> rucksack = new LinkedList<>();
     static List<Goods> fell = new ArrayList<>();
-    //static TreeMap fell = new TreeMap();
     static List<LinkedList<Goods>> head = new ArrayList<>();
+    static List<GoodsEntity.ground> grounds = new LinkedList<>();
 
 
     //static ArrayList<GoodsEntity.player> player = new ArrayList<>();
@@ -40,7 +43,7 @@ public class object {
     static ArrayList<Integer> MoveDirections = new ArrayList<>();
     static int MoveCondition = 0;
     static int MoveDirection = 0;
-    static long beforetime, sumulationtime = 0, fixedtimer = 20, starttime, endtime = 0;
+    static long beforetime, sumulationtime = 0, fixedtimer = 20, starttime = 1, endtime = 16;
     static GoodsEntity.player myself;
     static Bitmap[] left = new Bitmap[4];
     static Bitmap[] reight = new Bitmap[4];
@@ -48,9 +51,19 @@ public class object {
     static Bitmap[] button = new Bitmap[2];
     static Bitmap bomb[] = new Bitmap[2];
     static Bitmap cloud[] = new Bitmap[2];
-    static Bitmap baseball, grenade, NULL, luckybox, knife;
+    static Bitmap baseball, grenade, NULL, luckybox, knife, emoguoshi;
+
     static Bitmap greenhat, yellowhat, purplehat, bluehat, redhat;
 
+    static Bitmap caodi, caodi2;
+
+
+    static Bitmap[] number = new Bitmap[10];
+
+
+    static Bitmap LV0left[] = new Bitmap[12];
+    static Bitmap LV0reight[] = new Bitmap[12];
+    static Bitmap Seed[] = new Bitmap[4];
 
     static Bitmap[] bombExplosion = new Bitmap[5];
     static boolean isOk = true;
@@ -59,8 +72,8 @@ public class object {
     static Timer GoodsUpdate, animation;
     static Thread mainThread;
     static final Object object = new Object();
-    static Paint Bloodpaint1 = new Paint();
-    static Paint Bloodpaint2 = new Paint();
+    static Paint Bluepaint = new Paint();
+    static Paint Whitepaint = new Paint();
     static Paint paint = new Paint();
     static Thread request, send;
     static long RunTime, zTime;
@@ -68,12 +81,17 @@ public class object {
     static Bitmap bitmap1, bitmap2;
     static Canvas CameraView, FullView;
     static Bitmap FullBitmap;
-    static Paint paint1;
-    static Random random = new Random();
-    static Random random1 = new Random();
+
 
     static Paint DrakPaint = new Paint();
     static Bitmap meteor;
+    static MediaPlayer mediaPlayer = new MediaPlayer();
+    static Bitmap xy;
+    static SoundPool soundPool;
+    static int an, shiwang, pu, fuck1;
+    static Bitmap Bedrock;
+    static SensorManager sensorMgr;
+    static Sensor sensor;
 
 
 }

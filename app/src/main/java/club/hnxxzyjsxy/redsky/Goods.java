@@ -4,15 +4,17 @@ import android.graphics.Bitmap;
 
 public interface Goods {
 
+    public int getType();
+
     public Bitmap getBitmap();
 
-    public float getX();
+    public int getX();
 
-    public float getY();
+    public int getY();
 
-    public void setX(float x);
+    public void setX(int x);
 
-    public void setY(float y);
+    public void setY(int y);
 
 
     public void update();
@@ -29,6 +31,10 @@ public interface Goods {
     public boolean getIsRun();
 
     public void setIsRun(boolean is);
+
+    public void setIsLife(boolean is);
+
+    public boolean getIsLIfe();
 
     public void setAnimationNum(int num);
 
