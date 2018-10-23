@@ -28,14 +28,19 @@ public class object {
     static LinkedList<String> message = new LinkedList<>();
     static ArrayList<Goods> GameList = new ArrayList<>();
 
+
     // static List<Goods> bombImages = new LinkedList<>();
     //static List<Goods> grenades = new LinkedList<>();s
     //static TreeMap fell = new TreeMap();
     static List<Layer> Layer = new ArrayList<>();
     static List<Integer> rucksack = new LinkedList<>();
-    static List<Goods> fell = new ArrayList<>();
+    static List<Goods> fell = new LinkedList<>();
+    static List<Goods> scene = new ArrayList<>();
     static List<LinkedList<Goods>> head = new ArrayList<>();
     static List<GoodsEntity.ground> grounds = new LinkedList<>();
+
+    static ArrayList<news> info = new ArrayList<>();
+    static ArrayList<Integer> toolbar = new ArrayList<>();
 
 
     //static ArrayList<GoodsEntity.player> player = new ArrayList<>();
@@ -51,7 +56,11 @@ public class object {
     static Bitmap[] button = new Bitmap[2];
     static Bitmap bomb[] = new Bitmap[2];
     static Bitmap cloud[] = new Bitmap[2];
-    static Bitmap baseball, grenade, NULL, luckybox, knife, emoguoshi;
+    static Bitmap baseball, grenade, NULL, luckybox, emoguoshi, wupinglan, coin;
+    static Bitmap knife1, knife2;
+
+    static Bitmap EXPdrug, drug;
+
 
     static Bitmap greenhat, yellowhat, purplehat, bluehat, redhat;
 
@@ -59,11 +68,15 @@ public class object {
 
 
     static Bitmap[] number = new Bitmap[10];
+    static Bitmap[] numbers2 = new Bitmap[10];
 
-
-    static Bitmap LV0left[] = new Bitmap[12];
-    static Bitmap LV0reight[] = new Bitmap[12];
+    /*
+        static Bitmap LV0left[] = new Bitmap[12];
+        static Bitmap LV0reight[] = new Bitmap[12];*/
     static Bitmap Seed[] = new Bitmap[4];
+
+    static Bitmap xdeBox[] = new Bitmap[2];
+
 
     static Bitmap[] bombExplosion = new Bitmap[5];
     static boolean isOk = true;
@@ -72,9 +85,7 @@ public class object {
     static Timer GoodsUpdate, animation;
     static Thread mainThread;
     static final Object object = new Object();
-    static Paint Bluepaint = new Paint();
-    static Paint Whitepaint = new Paint();
-    static Paint paint = new Paint();
+
     static Thread request, send;
     static long RunTime, zTime;
     static Canvas canvas0, canvas1;
@@ -92,6 +103,41 @@ public class object {
     static Bitmap Bedrock;
     static SensorManager sensorMgr;
     static Sensor sensor;
+
+    static Bitmap playerL[] = new Bitmap[2];
+    static Bitmap playerR[] = new Bitmap[2];
+    static Bitmap buttonRestart;
+
+
+    //画笔
+    static Paint Bluepaint;
+    static Paint Whitepaint;
+    static Paint paint = new Paint();
+    static Paint redPaint;
+    static Paint playerPaint = new Paint(), bloodPaint = new Paint(), newsPaint = new Paint();
+
+
+    static Thread backgroundMusic, Gm;
+
+
+    static Bitmap exp;
+
+    static Canvas expCanvas;
+    static Bitmap gwt;
+
+    static Bitmap[][] moguguai = new Bitmap[2][3];
+
+    static Bitmap wd;
+
+
+    static Bitmap[] LRbutton = new Bitmap[2];
+
+
+    static ArrayList<String> rankingshow = new ArrayList<>();
+
+    static Bitmap[] jlf = new Bitmap[2];
+
+    static Bitmap bombJ;
 
 
 }

@@ -45,12 +45,15 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        Log.e("T", "create");
+        Log.e("surface", "create");
 
+        environmentObject.isRun = true;
+        object.mediaPlayer.start();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+        Log.e("surface", "changed");
         environmentObject.display_w = i1;
         environmentObject.display_h = i2;
         object.surfaceHolder = surfaceHolder;
@@ -65,119 +68,22 @@ public class Draw extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        Log.e("A", "destro");
+        Log.e("surface", "surfaceDestro");
         object.state = false;
         environmentObject.isRun = false;
-    }
-
-   /*     Canvas Mcanvas;
-        Paint paint = new Paint();
-        paint.setTextSize(50);
-        if (!environmentObject.iSinit) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Init.init();
-                    environmentObject.iSinit = true;
-                    environmentObject.page = 0;
-
-                }
-            }).start();
+        if (environmentObject.page == 22) {
+            environmentObject.page = 1;
         }
-        long InitTime = System.currentTimeMillis();
-        while (true) {
 
-            if (environmentObject.player_blood <= 0) {
-
-
-                System.exit(0);
-            }
-
-
-            object.starttime = System.currentTimeMillis();
-            object.zTime = System.currentTimeMillis();
-            object.RunTime = (System.currentTimeMillis() - InitTime);
-            object.beforetime = System.currentTimeMillis() - InitTime;
-            if (environmentObject.isRun) {
-
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Mcanvas = object.surfaceHolder.lockHardwareCanvas();
-                } else {
-                    Mcanvas = object.surfaceHolder.lockCanvas();
-                }
-                if (!environmentObject.isRun) {
-                    break;
-                }
-                if (!environmentObject.iSinit) {
-                    GameInit(Mcanvas);
-                }
-
-
-                switch (environmentObject.page) {
-                    case 0:
-                        Home.Home(Mcanvas);
-                        break;
-                    case 22:
-                        environmentObject.startime = System.currentTimeMillis();
-
-
-                        switch (environmentObject.code) {
-                            case 0:
-                                Play.ZeroToOne(Mcanvas);
-                                break;
-                            case 1:
-                                Render.GameAction(Mcanvas);
-                                break;
-                        }
-                        environmentObject.endtime = System.currentTimeMillis() - environmentObject.startime;
-
-                        break;
-                }
-                DrawSystemMessage(Mcanvas);
-
-
-                Mcanvas.drawText(object.endtime + "", 0, 100, paint);
-                Mcanvas.drawText(String.valueOf(object.head.get(0).size()), 0, 200, paint);
-                Mcanvas.drawText(String.valueOf(object.fell.size()), 0, 300, paint);
-                Mcanvas.drawText(environmentObject.display_w + "/" + environmentObject.display_h, 0, 500, paint);
-
-
-
-        *//*        long box = environmentObject.display_w / 5;
-                long z = 0;
-                if (rucksack.size() > 0) {
-                    for (int i = 0; i < rucksack.size(); i++) {
-                        switch (rucksack.get(i)) {
-                            case ItemID.HolyWater:
-                                break;
-                        }
-                    }
-                }*//*
-                if (environmentObject.isRun) {
-
-                }
-
-                object.surfaceHolder.unlockCanvasAndPost(Mcanvas);
-                object.endtime = System.currentTimeMillis() - object.starttime;
-            }
-
-
-            // Log.e("全局渲染时间：", endtime + "/" + environmentObject.endtime);
-//            Log.e("全局渲染时间：", FullBitmap.getRowBytes()*FullBitmap.getHeight()+"");
-
-        }*/
-
-
-    private void GameInit(Canvas canvas) {
+        object.mediaPlayer.pause();
 
 
     }
+
 
     private void DrawSystemMessage(Canvas canvas) {
         if (environmentObject.isBack) {
             canvas.drawText("INFAMATION", 500, 500, new Paint());
         }
     }
-
 }

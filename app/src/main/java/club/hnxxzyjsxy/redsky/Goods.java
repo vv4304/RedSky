@@ -1,6 +1,6 @@
 package club.hnxxzyjsxy.redsky;
 
-import android.graphics.Bitmap;
+        import android.graphics.Bitmap;
 
 public interface Goods {
 

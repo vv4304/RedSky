@@ -1,5 +1,6 @@
 package club.hnxxzyjsxy.redsky;
 
+import android.content.SyncContext;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -23,8 +24,8 @@ public class GoodsEntity {
         int conditon = 0;
 
         public player(int x, int y) {
-            width = object.LV0left[0].getWidth();
-            height = object.LV0left[0].getHeight();
+            width = object.playerL[0].getWidth();
+            height = object.playerL[0].getHeight();
             environmentObject.player_x = x;
             environmentObject.player_y = y;
             environmentObject.ScreenPosX = environmentObject.display_w / 2;
@@ -43,22 +44,21 @@ public class GoodsEntity {
             if (object.MoveDirections.size() > 0) {
                 if (object.MoveDirections.get(object.MoveDirections.size() - 1) == 0) {
                     movedirection = 0;
-                    return object.LV0reight[z];
+                    return object.playerL[z];
                 } else {
                     movedirection = 1;
-                    return object.LV0left[z];
+                    return object.playerR[z];
                 }
             } else {
-                if (movedirection == 0) {
+                if (environmentObject.fangxiang == 0) {
                     z = 0;
-                    return object.LV0left[0];
+                    return object.playerL[0];
                 } else {
                     z = 0;
-                    return object.LV0left[0];
+                    return object.playerR[0];
                 }
             }
         }
-
 
         @Override
         public int getX() {
@@ -72,14 +72,13 @@ public class GoodsEntity {
 
         @Override
         public void setX(int x) {
-            this.x = x;
+            environmentObject.player_x = x;
         }
 
         @Override
         public void setY(int y) {
-            this.y = y;
+            environmentObject.player_y = y;
         }
-
 
         @Override
         public void update() {
@@ -88,10 +87,10 @@ public class GoodsEntity {
             }
             if (object.MoveDirections.size() > 0) {
                 if (object.MoveDirections.get(object.MoveDirections.size() - 1) == 0) {
-                    if (System.currentTimeMillis() - inittime >= 30) {
+                    if (System.currentTimeMillis() - inittime >= 200) {
                         inittime = System.currentTimeMillis();
                         z++;
-                        if (z >= 12) z = 0;
+                        if (z >= 2) z = 0;
                     }
                     if (environmentObject.player_x > 0) {
                         if (environmentObject.player_x > object.DrawRect.left + environmentObject.display_w / 3) {
@@ -110,13 +109,13 @@ public class GoodsEntity {
                         }
                     }
                 } else {
-                    if (System.currentTimeMillis() - inittime >= 30) {
+                    if (System.currentTimeMillis() - inittime >= 200) {
                         inittime = System.currentTimeMillis();
                         z++;
-                        if (z >= 12) z = 0;
+                        if (z >= 2) z = 0;
                     }
-                    if (environmentObject.player_x + object.LV0left[0].getWidth() < environmentObject.WorldWidth) {
-                        if (environmentObject.player_x + object.LV0left[0].getWidth() < object.DrawRect.right - environmentObject.display_w / 3) {
+                    if (environmentObject.player_x + object.playerL[0].getWidth() < environmentObject.WorldWidth) {
+                        if (environmentObject.player_x + object.playerL[0].getWidth() < object.DrawRect.right - environmentObject.display_w / 3) {
                             environmentObject.player_x += environmentObject.player_speed;
                         } else {
                             if (object.DrawRect.right >= environmentObject.WorldWidth) {
@@ -135,7 +134,7 @@ public class GoodsEntity {
                     environmentObject.PlayerUpHeight = (int) (environmentObject.WorldDisplayHeight * 0.3);
                     statetime = System.currentTimeMillis();
                     Upheight = environmentObject.player_y - environmentObject.PlayerUpHeight;
-                    DownHeight = environmentObject.player_y + object.LV0left[0].getHeight();
+                    DownHeight = environmentObject.player_y + object.playerL[0].getHeight();
                 }
                 if (environmentObject.player_y > Upheight && environmentObject.PlayerState == 1) {
                     //environmentObject.player_y -= (int) (2 * ((System.currentTimeMillis() - statetime) / 10));
@@ -150,8 +149,8 @@ public class GoodsEntity {
                 //int tempy = environmentObject.player_y + (int) (2 * ((System.currentTimeMillis() - statetime) / 10));
                 int tempy = (int) (environmentObject.player_y + environmentObject.WorldDisplayHeight * 0.015);
                 for (int i = 0; i < object.grounds.size(); i++) {
-                    if (tempy + object.LV0left[0].getHeight() >= object.grounds.get(i).getY() && tempy < object.grounds.get(i).getY() && environmentObject.player_x + object.LV0left[0].getWidth() / 2 >= object.grounds.get(i).getX() && environmentObject.player_x + object.LV0left[0].getWidth() / 2 <= object.grounds.get(i).getX() + object.grounds.get(i).getwidth()) {
-                        tempy = object.grounds.get(i).getY() - object.LV0left[0].getHeight();
+                    if (tempy + object.playerL[0].getHeight() >= object.grounds.get(i).getY() && tempy < object.grounds.get(i).getY() && environmentObject.player_x + object.playerL[0].getWidth() / 2 >= object.grounds.get(i).getX() && environmentObject.player_x + object.playerL[0].getWidth() / 2 <= object.grounds.get(i).getX() + object.grounds.get(i).getwidth()) {
+                        tempy = object.grounds.get(i).getY() - object.playerL[0].getHeight();
                         statetime = 0;
                         Upheight = 0;
                         environmentObject.JumpCheck = true;
@@ -159,7 +158,7 @@ public class GoodsEntity {
                     }
                 }
                 for (int i = 0; i < object.grounds.size(); i++) {
-                    if (environmentObject.player_y + object.LV0left[0].getHeight() == object.grounds.get(i).getY() && environmentObject.player_x + object.LV0left[0].getWidth() / 2 >= object.grounds.get(i).getX() && environmentObject.player_x + object.LV0left[0].getWidth() / 2 <= object.grounds.get(i).getX() + object.grounds.get(i).getwidth()) {
+                    if (environmentObject.player_y + object.playerL[0].getHeight() == object.grounds.get(i).getY() && environmentObject.player_x + object.playerL[0].getWidth() / 2 >= object.grounds.get(i).getX() && environmentObject.player_x + object.playerL[0].getWidth() / 2 <= object.grounds.get(i).getX() + object.grounds.get(i).getwidth()) {
                         tempy = environmentObject.player_y;
                         break;
                     }
@@ -171,7 +170,6 @@ public class GoodsEntity {
 
         }
 
-
         @Override
         public int getsleep() {
             return 0;
@@ -181,7 +179,6 @@ public class GoodsEntity {
         public void setsleep(int sleep) {
 
         }
-
 
         @Override
         public int getwidth() {
@@ -222,8 +219,6 @@ public class GoodsEntity {
         public int getAnimationNum() {
             return 0;
         }
-
-
     }
 
     static class bombImage implements Goods {
@@ -248,7 +243,7 @@ public class GoodsEntity {
             z = random.nextInt(2);
             this.width = width;
             this.height = height;
-            this.x = environmentObject.random1.nextInt((int) (environmentObject.GameWorldX + environmentObject.WorldWidth * 0.2) - environmentObject.GameWorldX) + environmentObject.GameWorldX;
+            x = (int) (environmentObject.random1.nextInt(environmentObject.gameArea1 - environmentObject.gameArea0) + environmentObject.gameArea0);
             this.y = -object.bomb[0].getHeight();
             // type = random.nextInt(2);
             inittime = System.currentTimeMillis();
@@ -294,6 +289,11 @@ public class GoodsEntity {
         @Override
         public void update() {
             if (is) {
+
+                if (y + getheight() >= environmentObject.WorldDisplayHeight - object.caodi.getHeight()) {
+                    object.fell.remove(this);
+                }
+
                 y = (int) ((object.zTime - inittime) / 10 * environmentObject.BombSleep);
             } else {
                 if (num == 4) {
@@ -499,21 +499,23 @@ public class GoodsEntity {
         long EndTime;
         Date date;
         int MaxSleep = 10;
-        long time;
+
         int width;
         int height;
-        long inittime;
+        long inittime, time;
+
+        int condition = 0;
 
         public knife(int width, int height) {
 
             z = environmentObject.random1.nextInt(2);
             this.width = width;
             this.height = height;
-            this.x = environmentObject.random1.nextInt((int) (environmentObject.GameWorldX + environmentObject.WorldWidth * 0.2) - environmentObject.GameWorldX) + environmentObject.GameWorldX;
-
+            x = (int) (environmentObject.random1.nextInt(environmentObject.gameArea1 - environmentObject.gameArea0) + environmentObject.gameArea0);
+            time = System.currentTimeMillis();
             //Log.e("knife_x", x + "");
 
-            this.y = -object.knife.getHeight() * 2;
+            this.y = -object.knife1.getHeight() * 2;
             inittime = System.currentTimeMillis();
 
 
@@ -527,11 +529,10 @@ public class GoodsEntity {
 
         @Override
         public Bitmap getBitmap() {
-            if (is) {
-                return object.knife;
+            if (condition == 0) {
+                return object.knife1;
             } else {
-                return object.bombExplosion[num];
-
+                return object.knife2;
             }
 
         }
@@ -559,24 +560,38 @@ public class GoodsEntity {
 
         @Override
         public void update() {
+
             if (is) {
+                if (y + getheight() >= environmentObject.WorldDisplayHeight - object.caodi.getHeight()) {
+                    object.fell.remove(this);
+                }
                 y = (int) ((object.zTime - inittime) / 10 * environmentObject.KnifeSleep);
                 if (y > environmentObject.display_h) y = -getheight() * 2;
-            } else {
-                if (num == 4) {
-                    object.fell.remove(this);
-                } else if (System.currentTimeMillis() - EndTime > (100 * num)) {
-                    num++;
-                }
-                new Thread(new Runnable() {
+
+
+                if (System.currentTimeMillis() - time > 100)
+                    if (condition == 0) {
+                        condition = 1;
+                    } else {
+                        condition = 0;
+                    }
+                time = System.currentTimeMillis();
+
+
+            }
+
+
+
+
+/*                new Thread(new Runnable() {
                     @Override
                     public void run() {
                         environmentObject.v.vibrate(100);
 
                     }
-                }).start();
-            }
+                }).start();*/
         }
+
 
         @Override
         public int getsleep() {
@@ -628,11 +643,6 @@ public class GoodsEntity {
         @Override
         public int getAnimationNum() {
             return num;
-        }
-
-        @Override
-        public String toString() {
-            return "knife";
         }
     }
 
@@ -812,7 +822,7 @@ public class GoodsEntity {
             }
 
 
-            this.x = environmentObject.random1.nextInt((int) (environmentObject.GameWorldX + environmentObject.WorldWidth * 0.2) - environmentObject.GameWorldX) + environmentObject.GameWorldX;
+            x = (int) (environmentObject.random1.nextInt(environmentObject.gameArea1 - environmentObject.gameArea0) + environmentObject.gameArea0);
             this.y = -object.greenhat.getHeight();
             inittime = System.currentTimeMillis();
 
@@ -1309,11 +1319,11 @@ public class GoodsEntity {
             Canvas canvas = new Canvas(object.Bedrock);
             Paint paint2 = new Paint();
             paint2.setTextSize(100);
-            canvas.drawText("1500/100", 1500, 100, paint2);
+            canvas.drawText("1000", 1000, 100, paint2);
 
-            canvas.drawText("2000/500", 2000, 500, paint2);
+            canvas.drawText("2000", 2000, 500, paint2);
 
-            canvas.drawText("牛顿不存在的世界", 4000, 500, paint2);
+            canvas.drawText("薛定谔的世界", 9000, 500, paint2);
 
         }
 
@@ -1520,14 +1530,13 @@ public class GoodsEntity {
             inittime = System.currentTimeMillis();
             this.width = width;
             this.height = height;
-            x = (int) (environmentObject.random1.nextInt((int) (environmentObject.GameWorldX + environmentObject.WorldWidth * 0.2))) + environmentObject.GameWorldX;
+            // x = (int) (environmentObject.random1.nextInt((int) (environmentObject.GameWorldX + (environmentObject.WorldWidth * 0.2)))) + environmentObject.GameWorldX;
+
+            x = (int) (environmentObject.random1.nextInt(environmentObject.gameArea1 - environmentObject.gameArea0) + environmentObject.gameArea0);
 
 
-            Log.e("emoguoshi", x + "");
             this.y = -object.emoguoshi.getHeight() * 2;
             inittime = System.currentTimeMillis();
-
-
         }
 
         @Override
@@ -1565,9 +1574,11 @@ public class GoodsEntity {
 
             if (getIsLIfe()) {
                 if (getIsRun()) {
+                    if (y + getheight() >= environmentObject.WorldDisplayHeight - object.caodi.getHeight()) {
+                        object.fell.remove(this);
+                    }
                     y = (int) ((object.zTime - inittime) / 10 * environmentObject.emoguoshiSleep);
-                    //Log.e("Y", y + "");
-                    if (y > environmentObject.display_h) y = -getheight() * 2;
+                    //if (y > environmentObject.display_h) y = -getheight() * 2;
 
                 } else {
                 /*if (num == 4) {
@@ -1587,9 +1598,7 @@ public class GoodsEntity {
                 }
 
             } else {
-                environmentObject.player_blood += 50;
                 object.fell.remove(this);
-
             }
         }
 
@@ -1631,6 +1640,606 @@ public class GoodsEntity {
         @Override
         public boolean getIsLIfe() {
             return life;
+        }
+
+        @Override
+        public void setAnimationNum(int num) {
+
+        }
+
+        @Override
+        public int getAnimationNum() {
+            return 0;
+        }
+    }
+
+    static class xdeBox implements Goods {
+
+        int x, y, condition = 0;
+        long time;
+        boolean islife = true;
+
+
+        public xdeBox(int x, int y) {
+            this.x = x;
+            this.y = y;
+            time = System.currentTimeMillis();
+
+
+        }
+
+
+        @Override
+        public int getType() {
+            return ItemID.xdeBox;
+        }
+
+        @Override
+        public Bitmap getBitmap() {
+            return object.xdeBox[condition];
+        }
+
+        @Override
+        public int getX() {
+            return x;
+        }
+
+        @Override
+        public int getY() {
+            return y;
+        }
+
+        @Override
+        public void setX(int x) {
+            this.x = x;
+
+        }
+
+        @Override
+        public void setY(int y) {
+            this.y = y;
+        }
+
+        @Override
+        public void update() {
+
+            if (islife) {
+                if (System.currentTimeMillis() - time > 500) {
+                    if (condition == 0) {
+                        condition = 1;
+                    } else {
+
+                        condition = 0;
+                    }
+                    time = System.currentTimeMillis();
+                }
+            }
+
+        }
+
+        @Override
+        public int getsleep() {
+            return 0;
+        }
+
+        @Override
+        public void setsleep(int sleep) {
+
+        }
+
+        @Override
+        public int getwidth() {
+            return object.xdeBox[0].getWidth();
+        }
+
+        @Override
+        public int getheight() {
+            return object.xdeBox[0].getHeight();
+        }
+
+        @Override
+        public boolean getIsRun() {
+            return false;
+        }
+
+        @Override
+        public void setIsRun(boolean is) {
+            this.islife = is;
+
+        }
+
+        @Override
+        public void setIsLife(boolean is) {
+            this.islife = is;
+
+        }
+
+        @Override
+        public boolean getIsLIfe() {
+            return false;
+        }
+
+        @Override
+        public void setAnimationNum(int num) {
+
+        }
+
+        @Override
+        public int getAnimationNum() {
+            return 0;
+        }
+    }
+
+    static class muguguai1 implements Goods {
+
+        int x, y, condition = 0, direction;
+        long time0, time1;
+        boolean islife = true;
+
+
+        public muguguai1(int x, int y) {
+            this.x = x;
+            this.y = y;
+
+            time0 = System.currentTimeMillis();
+            time1 = System.currentTimeMillis();
+            direction = environmentObject.random1.nextInt(2);
+
+        }
+
+
+        @Override
+        public int getType() {
+            return ItemID.mgg;
+        }
+
+        @Override
+        public Bitmap getBitmap() {
+            if (direction == 0) {
+                return object.moguguai[0][condition];
+            } else {
+                return object.moguguai[1][condition];
+            }
+        }
+
+        @Override
+        public int getX() {
+            return this.x;
+        }
+
+        @Override
+        public int getY() {
+            return this.y;
+        }
+
+        @Override
+        public void setX(int x) {
+
+        }
+
+        @Override
+        public void setY(int y) {
+
+        }
+
+        @Override
+        public void update() {
+
+            if (islife) {
+
+                if (System.currentTimeMillis() - time0 >= 100) {
+
+                    if (direction == 0) {
+                        x -= 5;
+                    } else {
+                        x += 5;
+                    }
+
+
+                    if (condition < 3) {
+                        condition++;
+                    }
+                    if (condition == 3) {
+                        condition = 0;
+
+                    }
+
+                    time0 = System.currentTimeMillis();
+
+                }
+
+
+            }
+
+
+        }
+
+        @Override
+        public int getsleep() {
+            return 0;
+        }
+
+        @Override
+        public void setsleep(int sleep) {
+
+        }
+
+        @Override
+        public int getwidth() {
+            return object.moguguai[0][1].getWidth();
+        }
+
+        @Override
+        public int getheight() {
+            return object.moguguai[0][1].getHeight();
+        }
+
+        @Override
+        public boolean getIsRun() {
+            return true;
+        }
+
+        @Override
+        public void setIsRun(boolean is) {
+
+        }
+
+        @Override
+        public void setIsLife(boolean is) {
+
+        }
+
+        @Override
+        public boolean getIsLIfe() {
+            return false;
+        }
+
+        @Override
+        public void setAnimationNum(int num) {
+
+        }
+
+        @Override
+        public int getAnimationNum() {
+            return 0;
+        }
+    }
+
+    static class GWT implements Goods {
+
+        int x, y, condition = 0;
+        long time, inittime;
+        boolean islife = true;
+
+        public GWT() {
+            x = (int) (environmentObject.random1.nextInt(environmentObject.gameArea1 - environmentObject.gameArea0) + environmentObject.gameArea0) - getwidth();
+            this.y = environmentObject.WorldDisplayHeight - object.caodi.getHeight() - object.gwt.getHeight();
+            time = System.currentTimeMillis();
+            inittime = System.currentTimeMillis();
+        }
+
+
+        @Override
+        public int getType() {
+            return 0;
+        }
+
+        @Override
+        public Bitmap getBitmap() {
+            return object.gwt;
+        }
+
+        @Override
+        public int getX() {
+            return this.x;
+        }
+
+        @Override
+        public int getY() {
+            return this.y;
+        }
+
+        @Override
+        public void setX(int x) {
+
+        }
+
+        @Override
+        public void setY(int y) {
+
+        }
+
+        @Override
+        public void update() {
+            if (islife) {
+
+                if (System.currentTimeMillis() - inittime < 20000) {
+                    if (System.currentTimeMillis() - time > 1000) {
+                        if (environmentObject.random1.nextInt(10) == 0) {
+                            environmentObject.i = environmentObject.random1.nextInt(10);
+                            for (int i = 0; i < environmentObject.i; i++) {
+                                object.fell.add(new muguguai1(this.x, environmentObject.WorldDisplayHeight - object.caodi.getHeight() - object.moguguai[0][1].getHeight()));
+                            }
+                        }
+                        time = System.currentTimeMillis();
+                    }
+                } else {
+                    object.fell.remove(this);
+                }
+            }
+        }
+
+        @Override
+        public int getsleep() {
+
+
+            return 0;
+        }
+
+        @Override
+        public void setsleep(int sleep) {
+
+        }
+
+        @Override
+        public int getwidth() {
+            return 0;
+        }
+
+        @Override
+        public int getheight() {
+            return 0;
+        }
+
+        @Override
+        public boolean getIsRun() {
+            return false;
+        }
+
+        @Override
+        public void setIsRun(boolean is) {
+
+        }
+
+        @Override
+        public void setIsLife(boolean is) {
+
+        }
+
+        @Override
+        public boolean getIsLIfe() {
+            return false;
+        }
+
+        @Override
+        public void setAnimationNum(int num) {
+
+        }
+
+        @Override
+        public int getAnimationNum() {
+            return 0;
+        }
+    }
+
+    static class JLF implements Goods {
+
+        int x, y, condition = 0, direction = 0;
+        long time, inittime;
+        boolean islife = true;
+
+        public JLF() {
+            direction = environmentObject.random1.nextInt(2);
+            if (direction == 0) {
+                this.x = environmentObject.WorldWidth;
+            } else {
+                this.x = 0 - object.jlf[0].getWidth();
+            }
+
+            this.y = environmentObject.random1.nextInt(environmentObject.display_h / 10);
+            time = System.currentTimeMillis();
+            inittime = System.currentTimeMillis();
+        }
+
+
+        @Override
+        public int getType() {
+            return ItemID.jlf;
+        }
+
+        @Override
+        public Bitmap getBitmap() {
+            if (direction == 0) {
+                return object.jlf[0];
+            } else {
+                return object.jlf[1];
+
+            }
+
+        }
+
+        @Override
+        public int getX() {
+            return this.x;
+        }
+
+        @Override
+        public int getY() {
+            return this.y;
+        }
+
+        @Override
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        @Override
+        public void setY(int y) {
+
+        }
+
+        @Override
+        public void update() {
+
+            if (this.x > environmentObject.WorldWidth || this.x < -getwidth()) {
+                object.scene.remove(this);
+            }
+
+            if (environmentObject.random1.nextInt(100) == 0) {
+                object.fell.add(new bombJ(x + (getwidth() / 2), y + (getheight() / 2)));
+            }
+
+
+            if (direction == 0) {
+                x -= 2;
+            } else {
+                x += 2;
+            }
+
+
+        }
+
+        @Override
+        public int getsleep() {
+            return 0;
+        }
+
+        @Override
+        public void setsleep(int sleep) {
+
+        }
+
+        @Override
+        public int getwidth() {
+            return object.jlf[0].getWidth();
+        }
+
+        @Override
+        public int getheight() {
+            return object.jlf[0].getHeight();
+        }
+
+        @Override
+        public boolean getIsRun() {
+            return false;
+        }
+
+        @Override
+        public void setIsRun(boolean is) {
+
+        }
+
+        @Override
+        public void setIsLife(boolean is) {
+
+        }
+
+        @Override
+        public boolean getIsLIfe() {
+            return false;
+        }
+
+        @Override
+        public void setAnimationNum(int num) {
+
+        }
+
+        @Override
+        public int getAnimationNum() {
+            return 0;
+        }
+    }
+
+
+    static class bombJ implements Goods {
+
+        int x = 0, y = 0;
+        long inittime;
+
+        public bombJ(int x, int y) {
+            this.x = x;
+            this.y = y;
+            inittime = System.currentTimeMillis();
+
+        }
+
+
+        @Override
+        public int getType() {
+            return ItemID.bombJ;
+        }
+
+        @Override
+        public Bitmap getBitmap() {
+            return object.bombJ;
+        }
+
+        @Override
+        public int getX() {
+            return this.x;
+        }
+
+        @Override
+        public int getY() {
+            return this.y;
+        }
+
+        @Override
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        @Override
+        public void setY(int y) {
+            this.y = y;
+        }
+
+        @Override
+        public void update() {
+            y = (int) ((object.zTime - inittime) / 2 * environmentObject.bombJsleep);
+            x += 2;
+
+
+        }
+
+        @Override
+        public int getsleep() {
+            return 0;
+        }
+
+        @Override
+        public void setsleep(int sleep) {
+
+        }
+
+        @Override
+        public int getwidth() {
+            return object.bombJ.getWidth();
+        }
+
+        @Override
+        public int getheight() {
+            return object.bombJ.getHeight();
+        }
+
+        @Override
+        public boolean getIsRun() {
+            return false;
+        }
+
+        @Override
+        public void setIsRun(boolean is) {
+
+        }
+
+        @Override
+        public void setIsLife(boolean is) {
+
+        }
+
+        @Override
+        public boolean getIsLIfe() {
+            return false;
         }
 
         @Override

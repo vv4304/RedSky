@@ -9,6 +9,8 @@ import java.util.Random;
 
 public class environmentObject {
 
+
+    static int fangxiang = 0;
     static int ZZS = 10086;
     static int code = 1;
     static int bomb_sleep;
@@ -36,6 +38,8 @@ public class environmentObject {
     static long BombSleep = 10;
     static long KnifeSleep = 10;
     static long emoguoshiSleep = 8;
+    static long bombJsleep = 2;
+
 
     static long maxMemory, totalMemory, freeMemory;
 
@@ -58,8 +62,28 @@ public class environmentObject {
     static long StartTime = 0;
     static int sensorX = 0, sensorY = 0, sensorZ = 0;
     static boolean JumpCheck = false;
-
     static long GameRunTime = 0, GameStartTime = 0;
+    static int knifeDamage = 25, bombDamage = 30;
+    static long i;
+    static long activityStopTime = 0;
+    static int randomDamage = 0;
+    static int EXP = 0, maxEXP = 300, Level = 1;
+    static float EXP_b;
+    static int gameArea0, gameArea1;
+    static char[] timeChar;
+    static int zx;
+    static int year;
+    static int wpl;
+    static int maxToolbar = 6;
+    static boolean isReduceBlood = true;
+    static long WDendtime;
+
+    static String NO1name = null;
+    static int NO1time = 0;
+
+
+    static boolean updata = false;
+    static String myID = "TEST";
 
 
 }
