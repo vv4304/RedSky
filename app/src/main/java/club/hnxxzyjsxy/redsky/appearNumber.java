@@ -2,11 +2,11 @@ package club.hnxxzyjsxy.redsky;
 
 public class appearNumber {
 
-    static int Box = 20;
-    static int Jlf = 1;
-    static int Hat = 20;
-    static int Cloud = 3;
-    static int GWT = 30;
+    static int Box = 50;
+    static int Jlf = 10;
+    static int Hat = 50;
+    static int Cloud = 5;
+    static int GWT = 50;
 
 
 }

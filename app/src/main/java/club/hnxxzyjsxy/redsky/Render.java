@@ -9,7 +9,6 @@ import android.util.Log;
 import java.io.IOException;
 
 public class Render implements Runnable {
-
     @Override
     public void run() {
         Canvas Mcanvas;
@@ -26,7 +25,6 @@ public class Render implements Runnable {
                 }
             }).start();
         }
-
         long InitTime = System.currentTimeMillis();
         long temporaryTime = System.currentTimeMillis();
         while (true) {
@@ -46,8 +44,6 @@ public class Render implements Runnable {
                 if (!environmentObject.iSinit) {
                     //GameInit(Mcanvas);
                 }
-
-
                 switch (environmentObject.page) {
                     case 0:
                         Home.home(Mcanvas);
@@ -65,30 +61,21 @@ public class Render implements Runnable {
                         }
                         environmentObject.endtime = System.currentTimeMillis() - environmentObject.startime;
                         break;
-
                     case 1:
                         Home.endShow(Mcanvas);
                         break;
-
                 }
                 // DrawSystemMessage(Mcanvas);
-
                 //Mcanvas.drawText("FPS" + object.endtime, 0, 100, paint);
                 //Mcanvas.drawText(String.valueOf(object.head.get(0).size()), 0, 200, paint);
                 //Mcanvas.drawText(String.valueOf(object.fell.size()), 0, 300, paint);
                 //Mcanvas.drawText(environmentObject.display_w + "/" + environmentObject.display_h, 0, 500, paint);
                 //Mcanvas.drawText(environmentObject.GameRunTime + "", 0, 600, paint);
-
-
                 /*
-
-
                 if (System.currentTimeMillis() - temporaryTime >= 100) {
                     temporaryTime = System.currentTimeMillis();
                     //environmentObject.FPS = (int) (1000 / object.endtime);
                 }
-
-
 */
         /*        long box = environmentObject.display_w / 5;
                 long z = 0;
@@ -101,22 +88,13 @@ public class Render implements Runnable {
                     }
                 }*/
                 if (environmentObject.isRun) {
-
                 }
-
                 object.surfaceHolder.unlockCanvasAndPost(Mcanvas);
-
-
                 object.endtime = System.currentTimeMillis() - object.starttime;
             }
-
-
             // Log.e("全局渲染时间：", endtime + "/" + environmentObject.endtime);
 //            Log.e("全局渲染时间：", FullBitmap.getRowBytes()*FullBitmap.getHeight()+"");
 
         }
-
     }
-
-
 }

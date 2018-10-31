@@ -40,5 +40,4 @@ public interface Goods {
 
     public int getAnimationNum();
 
-
 }

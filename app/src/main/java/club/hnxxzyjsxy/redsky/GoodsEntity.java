@@ -2027,8 +2027,10 @@ public class GoodsEntity {
         int x, y, condition = 0, direction = 0;
         long time, inittime;
         boolean islife = true;
+        int Sleep;
 
         public JLF() {
+            Sleep = environmentObject.random1.nextInt(4) + 1;
             direction = environmentObject.random1.nextInt(2);
             if (direction == 0) {
                 this.x = environmentObject.WorldWidth;
@@ -2084,19 +2086,14 @@ public class GoodsEntity {
             if (this.x > environmentObject.WorldWidth || this.x < -getwidth()) {
                 object.scene.remove(this);
             }
-
-            if (environmentObject.random1.nextInt(100) == 0) {
+            if (environmentObject.random1.nextInt(50) == 0) {
                 object.fell.add(new bombJ(x + (getwidth() / 2), y + (getheight() / 2)));
             }
-
-
             if (direction == 0) {
-                x -= 2;
+                x -= Sleep;
             } else {
-                x += 2;
+                x += Sleep;
             }
-
-
         }
 
         @Override
@@ -2149,7 +2146,6 @@ public class GoodsEntity {
             return 0;
         }
     }
-
 
     static class bombJ implements Goods {
 
@@ -2252,6 +2248,5 @@ public class GoodsEntity {
             return 0;
         }
     }
-
 
 }

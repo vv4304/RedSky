@@ -56,10 +56,7 @@ public class Home {
 
         }
 
-
         canvas.drawBitmap(object.buttonRestart, (float) (environmentObject.display_w * 0.1), environmentObject.display_h - object.buttonRestart.getHeight(), object.paint);
 
-
     }
-
 }

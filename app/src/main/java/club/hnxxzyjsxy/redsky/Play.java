@@ -239,8 +239,6 @@ public class Play {
     static void GameActionUpdate() {
         if (environmentObject.StartTime == 0) {
             environmentObject.StartTime = System.currentTimeMillis();
-
-
         }
         if (environmentObject.player_blood <= 0) {
             environmentObject.page = 1;
@@ -271,52 +269,35 @@ public class Play {
                                     }
                                 }
                             });
-
-
                         }
-
-
                     } else {
                         Log.e("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());
                     }
                 }
             });
-
-
         }
-
-
         if (!environmentObject.isReduceBlood) {
             if (System.currentTimeMillis() >= environmentObject.WDendtime) {
                 environmentObject.isReduceBlood = true;
 
             }
         }
-
-
         environmentObject.year = (int) (environmentObject.GameRunTime / 1000 / 3);
         environmentObject.timeChar = String.valueOf(environmentObject.GameRunTime / 1000).toCharArray();
         environmentObject.zx = environmentObject.display_w - (object.number[0].getWidth() * environmentObject.timeChar.length);
         environmentObject.player_blood_b = environmentObject.display_w * 0.8 / environmentObject.player_maxblood;
         environmentObject.EXP_b = (float) (object.exp.getHeight()) / environmentObject.maxEXP;
-
         TimeZ();
-
-
         for (int i = 0; i < object.scene.size(); i++) {
             object.scene.get(i).update();
         }
-
         for (int i = 0; i < object.fell.size(); i++) {
             object.fell.get(i).update();
         }
-
         object.myself.update();
-
         for (int i = 0; i < object.Layer.size(); i++) {
             object.Layer.get(i).update();
         }
-
         object.GameList.get(0).update();
         if (object.head.get(0).size() > 0) {
             object.head.get(0).get(0).setX((environmentObject.player_x + object.playerL[0].getWidth() / 2) - (object.greenhat.getWidth() / 2));
@@ -326,8 +307,6 @@ public class Play {
                 object.head.get(0).get(i).setY(object.head.get(0).get(i - 1).getY() - object.head.get(0).get(0).getheight() / 2);
             }
         }
-
-
         for (int i = 0; i < object.fell.size(); i++) {
             float x = object.fell.get(i).getX();
             float y = object.fell.get(i).getY();
@@ -390,7 +369,11 @@ public class Play {
                             environmentObject.randomDamage = environmentObject.random1.nextInt(60) + 40;
                             gameEvent.PlayerAddBoold(environmentObject.randomDamage);
                             object.info.add(new news("恶魔果实+" + environmentObject.randomDamage, System.currentTimeMillis() + 50));
+                            break;
 
+                        case ItemID.bombJ:
+                            object.fell.remove(object.fell.get(i));
+                            object.head.get(0).remove(object.head.get(0).get(object.head.get(0).size() - 1));
 
                             break;
                     }
@@ -459,10 +442,20 @@ public class Play {
                         object.info.clear();
                         object.info.add(new news("-" + environmentObject.randomDamage, System.currentTimeMillis() + 50));
                         break;
+                    case ItemID.bombJ:
+                        object.fell.remove(object.fell.get(i));
+                        environmentObject.randomDamage = environmentObject.random1.nextInt(30);
+                        gameEvent.PlayerAddBoold(-environmentObject.randomDamage);
+                        environmentObject.EXP += environmentObject.randomDamage;
+                        object.info.clear();
+                        object.info.add(new news("-" + environmentObject.randomDamage, System.currentTimeMillis() + 50));
+
+
+
+                        break;
                 }
             }
         }
-
         if (environmentObject.EXP >= environmentObject.Level * 300) {
             environmentObject.player_maxblood += 100;
             environmentObject.Level += 1;
@@ -472,7 +465,6 @@ public class Play {
                 environmentObject.maxToolbar += 1;
             }
         }
-
     }
 
     static void TimeZ() {
